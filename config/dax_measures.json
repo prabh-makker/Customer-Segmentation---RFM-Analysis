@@ -1,0 +1,15 @@
+{
+  "Total_Customers": "COUNTA(rfm_segmentation[customer_id])",
+  "Total_Revenue": "SUM(rfm_segmentation[monetary])",
+  "Avg_CLV": "AVERAGE(rfm_segmentation[monetary])",
+  "Churn_Rate_Percent": "\nDIVIDE(\n    COUNTIF(rfm_segmentation[segment], \"Lost\"),\n    COUNTA(rfm_segmentation[customer_id]),\n    0\n) * 100\n        ",
+  "At_Risk_Count": "\nCOUNTIF(rfm_segmentation[segment], \"At Risk\") +\nCOUNTIF(rfm_segmentation[segment], \"Can't Lose Them\")\n        ",
+  "At_Risk_Revenue": "\nCALCULATE(\n    SUM(rfm_segmentation[monetary]),\n    OR(\n        rfm_segmentation[segment] = \"At Risk\",\n        rfm_segmentation[segment] = \"Can't Lose Them\"\n    )\n)\n        ",
+  "Champions_Revenue": "\nCALCULATE(\n    SUM(rfm_segmentation[monetary]),\n    rfm_segmentation[segment] = \"Champions\"\n)\n        ",
+  "Avg_Order_Value": "AVERAGE(rfm_segmentation[customer_value])",
+  "High_Value_Customers": "COUNTIF(rfm_segmentation[M_score], 5)",
+  "Active_Customers": "COUNTIF(rfm_segmentation[recency], '<90')",
+  "Revenue_Share_Percent": "\nDIVIDE(\n    SUM(rfm_segmentation[monetary]),\n    CALCULATE(SUM(rfm_segmentation[monetary]), ALL(rfm_segmentation)),\n    0\n) * 100\n        ",
+  "Customer_Concentration": "\nDIVIDE(\n    SUM(rfm_segmentation[monetary]),\n    COUNTA(rfm_segmentation[customer_id]),\n    0\n        ",
+  "Repeat_Purchase_Rate": "\nDIVIDE(\n    COUNTIF(rfm_segmentation[frequency], '>1'),\n    COUNTA(rfm_segmentation[customer_id]),\n    0\n) * 100\n        "
+}
