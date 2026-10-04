@@ -21,7 +21,9 @@ pip install -r requirements.txt
 python rfm_analysis.py
 ```
 
-Then open the `.pbix`. It points at the CSV by absolute path, so repoint it once: Home > Transform data > Data source settings > Change source.
+Then open the `.pbix`. It reads `data/rfm_segmentation.csv` from this repo on GitHub (raw URL), so it refreshes anywhere with internet and needs no setup. To use your local CSV instead: Home > Transform data > Source, swap `Web.Contents(url)` for `File.Contents(path)`.
+
+The insight text boxes on both pages are typed text. If you change the data, edit those numbers by hand. Cards, charts and tables update on refresh.
 
 ## Segments
 
