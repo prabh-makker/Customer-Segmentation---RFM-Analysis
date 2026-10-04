@@ -36,12 +36,12 @@ def generate_realistic_data(n_customers=2000, n_transactions=8000):
 
 def clean_data(df):
     """Data cleaning and validation"""
-    print("🧹 Cleaning data...")
+    print("Cleaning data...")
     df = df.drop_duplicates(subset=['order_id'])
     df = df[df['amount'] > 0]
     Q3 = df['amount'].quantile(0.99)
     df = df[df['amount'] <= Q3]
-    print(f"  ✓ Cleaned: {len(df)} transactions")
+    print(f"  Cleaned: {len(df)} transactions")
     return df
 
 def calculate_rfm(df, reference_date=None):
@@ -103,17 +103,17 @@ def segment_customers(rfm):
 
 if __name__ == '__main__':
     print("=" * 70)
-    print("🚀 RFM SEGMENTATION ANALYSIS - PRODUCTION READY")
+    print("RFM SEGMENTATION ANALYSIS - PRODUCTION READY")
     print("=" * 70)
 
-    print("\n📊 Generating realistic e-commerce data...")
+    print("\nGenerating realistic e-commerce data...")
     transactions = generate_realistic_data(n_customers=2000, n_transactions=8000)
-    print(f"  ✓ Generated: {len(transactions)} transactions from {transactions['customer_id'].nunique()} customers")
+    print(f"  Generated: {len(transactions)} transactions from {transactions['customer_id'].nunique()} customers")
 
-    print("\n🔄 Data processing pipeline...")
+    print("\nData processing pipeline...")
     transactions = clean_data(transactions)
 
-    print("\n📈 Calculating RFM metrics...")
+    print("\nCalculating RFM metrics...")
     rfm = calculate_rfm(transactions)
     rfm = score_rfm(rfm)
     rfm = segment_customers(rfm)
@@ -122,36 +122,41 @@ if __name__ == '__main__':
     rfm['customer_value'] = rfm['monetary'] / rfm['frequency']
     rfm['days_since_purchase'] = rfm['recency']
 
+    year_rev = transactions.pivot_table(index='customer_id', columns=transactions['transaction_date'].dt.year,
+                                        values='amount', aggfunc='sum', fill_value=0)
+    rfm['revenue_2023'] = rfm['customer_id'].map(year_rev[2023]).round(2)
+    rfm['revenue_2024'] = rfm['customer_id'].map(year_rev[2024]).round(2)
+
     # Reorder columns for Power BI
     rfm = rfm[[
         'customer_id', 'recency', 'frequency', 'monetary',
         'R_score', 'F_score', 'M_score', 'rfm_score', 'rfm_segment_code',
-        'segment', 'customer_value', 'days_since_purchase'
+        'segment', 'customer_value', 'days_since_purchase', 'revenue_2023', 'revenue_2024'
     ]]
 
     os.makedirs('data', exist_ok=True)
     output_file = 'data/rfm_segmentation.csv'
     rfm.to_csv(output_file, index=False)
 
-    print(f"\n✅ RFM data ready: {output_file}")
+    print(f"\nRFM data ready: {output_file}")
 
     print("\n" + "=" * 70)
-    print("📊 BUSINESS INSIGHTS")
+    print("BUSINESS INSIGHTS")
     print("=" * 70)
     print(f"Total Customers: {len(rfm):,}")
-    print(f"Total Revenue: ₹{rfm['monetary'].sum():,.0f}")
-    print(f"Avg Customer Lifetime Value: ₹{rfm['monetary'].mean():,.0f}")
+    print(f"Total Revenue: Rs {rfm['monetary'].sum():,.0f}")
+    print(f"Avg Customer Lifetime Value: Rs {rfm['monetary'].mean():,.0f}")
     print(f"Date Range: 2023-01-01 to 2024-12-31\n")
 
-    print("📋 CUSTOMER SEGMENTS:")
+    print("CUSTOMER SEGMENTS:")
     for segment in ['Champions', 'Loyal Customers', 'Potential Loyalists', 'Recent Customers', 'At Risk', 'Cant Lose Them', 'Lost']:
         count = len(rfm[rfm['segment'] == segment])
         if count > 0:
             revenue = rfm[rfm['segment'] == segment]['monetary'].sum()
             pct = (count / len(rfm)) * 100
             avg_value = rfm[rfm['segment'] == segment]['monetary'].mean()
-            print(f"  {segment:25s}: {count:4d} ({pct:5.1f}%) → Revenue: ₹{revenue:>12,.0f} | Avg: ₹{avg_value:>8,.0f}")
+            print(f"  {segment:25s}: {count:4d} ({pct:5.1f}%) -> Revenue: Rs {revenue:>12,.0f} | Avg: Rs {avg_value:>8,.0f}")
 
     print("\n" + "=" * 70)
-    print("✨ Ready for Power BI Dashboard")
+    print("Ready for Power BI Dashboard")
     print("=" * 70)

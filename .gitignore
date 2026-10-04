@@ -33,7 +33,3 @@ env/
 # OS
 .DS_Store
 Thumbs.db
-
-# Power BI
-*.pbix
-*.pbit
