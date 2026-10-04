@@ -2,6 +2,9 @@
 
 Python builds RFM scores and 8 customer segments from synthetic e-commerce transactions. A 2-page Power BI dashboard reads the result.
 
+![Page 1](screenshots/page1-where-your-customers-stand.jpg)
+![Page 2](screenshots/page2-insights-actions.jpg)
+
 ## Files
 
 | File | What |
@@ -9,6 +12,7 @@ Python builds RFM scores and 8 customer segments from synthetic e-commerce trans
 | `rfm_analysis.py` | Generates transactions, scores R/F/M (1-5), assigns segments, writes the CSV |
 | `data/rfm_segmentation.csv` | 1,960 customers, 14 columns |
 | `RFM_Customer_Segmentation_Dashboard.pbix` | The dashboard |
+| `screenshots/` | Both dashboard pages |
 
 ## Run
 
