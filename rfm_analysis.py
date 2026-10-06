@@ -47,7 +47,8 @@ def clean_data(df):
 def calculate_rfm(df, reference_date=None):
     """Calculate RFM: Recency, Frequency, Monetary"""
     if reference_date is None:
-        reference_date = datetime(2025, 12, 31)
+        # the day after the last transaction, so the most recent buyer has recency 1
+        reference_date = df['transaction_date'].max() + timedelta(days=1)
 
     rfm = df.groupby('customer_id').agg({
         'transaction_date': lambda x: (reference_date - x.max()).days,
@@ -146,7 +147,7 @@ if __name__ == '__main__':
     print(f"Total Customers: {len(rfm):,}")
     print(f"Total Revenue: Rs {rfm['monetary'].sum():,.0f}")
     print(f"Avg Customer Lifetime Value: Rs {rfm['monetary'].mean():,.0f}")
-    print(f"Date Range: 2023-01-01 to 2024-12-31\n")
+    print(f"Date Range: {transactions['transaction_date'].min():%Y-%m-%d} to {transactions['transaction_date'].max():%Y-%m-%d}\n")
 
     print("CUSTOMER SEGMENTS:")
     for segment in ['Champions', 'Loyal Customers', 'Potential Loyalists', 'Recent Customers', 'At Risk', 'Cant Lose Them', 'Lost']:

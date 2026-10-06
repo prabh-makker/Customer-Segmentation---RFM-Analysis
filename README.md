@@ -49,6 +49,6 @@ Health Status = SWITCH(TRUE(), [Health Score] >= 7, "Healthy", [Health Score] >=
 Trend = (2024 revenue - 2023 revenue) / 2023 revenue, from revenue_2023 and revenue_2024
 ```
 
-"Active" excludes the three at-risk segments because every customer in the data is at least 366 days since last purchase, so a recency cutoff would match nobody.
+Recency is counted in days up to the day after the last transaction (2024-12-31), so the most recent buyer has recency 1. "Active" means every segment except At Risk, Cant Lose Them and Lost.
 
 Data is synthetic (fixed seed 42).
